@@ -1,0 +1,49 @@
+# URL短縮サービス
+
+Laravel（API）+ React/TypeScript（SPA）のURL短縮サービス。転職用ポートフォリオで、機能の多さより設計判断の根拠・型安全・テスト・CIを重視する。ローカル環境のみで動かし、本番公開はしない。
+
+## ディレクトリ構成
+
+```
+backend/    Laravel（API・リダイレクト）
+frontend/   React + TypeScript（Vite）
+docs/       計画書・設計書（下記）
+compose.yaml
+```
+
+## 設計書
+
+作業前に、対象のIDに対応する設計書を読むこと。設計書をすべて読む必要はない。
+
+| 内容 | 場所 |
+| --- | --- |
+| 計画・スコープ | `docs/00_project-plan.md` |
+| 要件・設計論点の決定 | `docs/01_requirements.md` |
+| 構成・方式・CI | `docs/02_architecture.md` |
+| DB | `docs/03_database.md` |
+| API（API-01〜03） | `docs/api/API-XX_*.md` |
+| 画面（SCR-01〜02） | `docs/screens/SCR-XX_*.md` |
+| テスト | `docs/tests/README.md`（共通方針）、`docs/tests/{ID}_test.md` |
+
+例: API-01 の実装 → `docs/api/API-01_*.md` と `docs/tests/API-01_test.md` を読む。
+
+## ルール
+
+- 設計書が確定（ステータス「確定」）するまで、その機能を実装しない
+- 実装中に設計を変える場合は、先に設計書を更新してから実装する
+- MVP（API-01〜03、SCR-01〜02）の完成前に、将来拡張の機能に着手しない
+- 実装とテストは同時に書き、テストの説明文の先頭にテストID（例: `API-01-T01`）を付ける
+- PHP: 全ファイルに `declare(strict_types=1)`、引数・戻り値の型宣言。Larastanは最大レベルで通す
+- TypeScript: `strict: true`。APIの型は `src/api/schema.d.ts`（自動生成）を使い、手で書かない・編集しない
+- コミット前に静的解析・整形・テストを通す
+
+## Git・コミット
+
+- コミットは機能やテストのまとまりごとに小さく分ける
+- コミットメッセージは日本語で、「何をしたか」が分かるように書く（例: `API-01 短縮URL登録APIと機能テストを追加`）
+- コミットにはこのリポジトリのローカル設定（個人用アカウント）を使う。`git config` の user.name / user.email は変更しない
+- GitHubへのpushはこのPCから行わない
+
+## コマンド
+
+環境構築時に追記する。
