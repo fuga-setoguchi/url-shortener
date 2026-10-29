@@ -21,6 +21,7 @@
 | API-01-T11 | 異常 | 文字列以外（配列 `["https://example.com"]`） | 422 |
 | API-01-T12 | 異常 | 1分間に61回送信 | 61回目が429 |
 | API-01-T13 | 正常 | `SHORT_URL_BASE` を `https://sho.rt` に変更 | `short_url` が `https://sho.rt/{code}` |
+| API-01-T14 | 正常 | `SHORT_URL_BASE` を末尾スラッシュ付きの `https://sho.rt/` に変更 | `short_url` が `https://sho.rt/{code}`（`/` が重ならない） |
 
 ## 単体テスト
 

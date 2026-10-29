@@ -93,6 +93,9 @@ backend/app/
 
 `config/shorturl.php` に `base_url`（`env('SHORT_URL_BASE', env('APP_URL'))`）を定義し、`ShortUrlResource` で `rtrim(base_url, '/') . '/' . code` を返す。フロントエンドは組み立てを行わず、APIの `short_url` をそのまま表示する。
 
+- `SHORT_URL_BASE` は開発者が `.env` で管理する設定値であり、利用者の入力ではないため、値の形式は検証しない（`APP_URL` と同じ扱い）。`.env.example` に正しい形式の値を記載する
+- 末尾の `/` の有無による二重スラッシュは `rtrim` で吸収する
+
 ### 3.4 フロントエンドの構成
 
 ```
