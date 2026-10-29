@@ -11,7 +11,7 @@
 | 項目 | 内容 |
 | --- | --- |
 | メソッド | GET |
-| パス | /api/short-urls |
+| パス | /api/v1/short-urls |
 | 認証 | なし |
 | 処理クラス | ShortUrlController@index → ShortUrlResource::collection |
 

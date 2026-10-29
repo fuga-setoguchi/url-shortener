@@ -83,11 +83,18 @@ backend/app/
 
 | 定義場所 | ルート | ミドルウェア |
 | --- | --- | --- |
-| `routes/api.php` | `POST /api/short-urls`、`GET /api/short-urls` | `api`（POSTには `throttle:60,1`） |
+| `routes/api.php` | `POST /api/v1/short-urls`、`GET /api/v1/short-urls` | `api`（POSTには `throttle:60,1`） |
 | `routes/web.php` | `GET /{code}`（`code` は `[A-Za-z0-9]{7}` の正規表現制約） | なし（後述） |
 
 - リダイレクトはステートレスなため、セッション・Cookie・CSRFを扱う `web` ミドルウェアグループを適用しない（`bootstrap/app.php` の `withRouting` で web ルートをミドルウェアなしで登録する）。不要なセッション書き込みを避けるため
 - コード形式の制約により、`/up`（ヘルスチェック）や `/docs/api`（Scramble）とは衝突しない
+
+#### APIのバージョニング
+
+- APIはURLにメジャーバージョンを付ける（`bootstrap/app.php` の `withRouting(apiPrefix: 'api/v1')`）
+- 互換性を壊す変更（項目の削除・型や意味の変更）を行う場合だけ `v2` を追加し、移行期間は `v1` と並行して提供する。項目の追加など互換性を保つ変更は `v1` のまま行う
+- リダイレクト（`/{code}`）にはバージョンを付けない。短いURLは外部に配布され、変わらないことが前提のため
+- コントローラー等の `V1` 名前空間への分割は、`v2` が必要になった時点で行う（MVPでは1バージョンのみのため）
 
 ### 3.3 短いURLの組み立て
 

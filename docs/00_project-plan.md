@@ -73,8 +73,8 @@ API
 
 | ID | メソッド | パス | 概要 |
 | --- | --- | --- | --- |
-| API-01 | POST | /api/short-urls | URLを登録し、短縮コードと短いURLを返す |
-| API-02 | GET | /api/short-urls | 登録済みURLの一覧とクリック数を返す |
+| API-01 | POST | /api/v1/short-urls | URLを登録し、短縮コードと短いURLを返す |
+| API-02 | GET | /api/v1/short-urls | 登録済みURLの一覧とクリック数を返す |
 | API-03 | GET | /{code} | 元のURLへリダイレクトし、クリックを記録する |
 
 画面

@@ -11,7 +11,7 @@
 | 項目 | 内容 |
 | --- | --- |
 | メソッド | POST |
-| パス | /api/short-urls |
+| パス | /api/v1/short-urls |
 | 認証 | なし |
 | レート制限 | 60回/分/IP（超過時429） |
 | 処理クラス | ShortUrlController@store → StoreShortUrlRequest → CreateShortUrl → ShortUrlResource |
