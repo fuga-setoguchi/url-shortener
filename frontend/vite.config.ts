@@ -21,6 +21,8 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
+    // 日時の表示（ローカル時刻）をテストで固定するため
+    env: { TZ: 'Asia/Tokyo' },
     restoreMocks: true,
   },
 })

@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router'
 import { RouterProvider } from 'react-router/dom'
 import { Layout } from './components/Layout.tsx'
 import { RegisterPage } from './features/short-urls/RegisterPage.tsx'
+import { UrlListPage } from './features/short-urls/UrlListPage.tsx'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,7 +15,10 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
-    children: [{ index: true, element: <RegisterPage /> }],
+    children: [
+      { index: true, element: <RegisterPage /> },
+      { path: 'urls', element: <UrlListPage /> },
+    ],
   },
 ])
 

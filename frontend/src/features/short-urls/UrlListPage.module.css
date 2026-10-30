@@ -1,0 +1,77 @@
+.page {
+  display: grid;
+  gap: 1rem;
+}
+
+.total {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.table th,
+.table td {
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.table th:nth-child(1) {
+  width: 30%;
+}
+
+.table th {
+  white-space: nowrap;
+}
+
+.table th:nth-child(3) {
+  width: 7rem;
+}
+
+.table th:nth-child(4) {
+  width: 10rem;
+}
+
+.table .number {
+  text-align: right;
+}
+
+.originalUrl {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.pagination {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.message {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: start;
+}
+
+.button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--color-primary);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
