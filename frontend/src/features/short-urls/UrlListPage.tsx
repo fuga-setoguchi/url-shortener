@@ -1,5 +1,6 @@
 import { Link, useSearchParams } from 'react-router'
 import type { ShortUrl } from '../../api/client.ts'
+import ui from '../../components/ui.module.css'
 import { useShortUrls } from './hooks.ts'
 import styles from './UrlListPage.module.css'
 
@@ -44,7 +45,7 @@ export function UrlListPage() {
         <p role="alert">一覧を取得できませんでした</p>
         <button
           type="button"
-          className={styles.button}
+          className={ui.buttonUtility}
           onClick={() => {
             void shortUrls.refetch()
           }}
@@ -68,52 +69,59 @@ export function UrlListPage() {
 
   return (
     <section className={styles.page}>
-      <h1>登録済みURL一覧</h1>
-      <p className={styles.total}>全{meta.total}件</p>
+      <div className={ui.hero}>
+        <h1 className={ui.heroTitle}>登録済みURL一覧</h1>
+        <p className={ui.heroTagline}>全{meta.total}件</p>
+      </div>
 
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th scope="col">短いURL</th>
-            <th scope="col">元のURL</th>
-            <th scope="col" className={styles.number}>
-              クリック数
-            </th>
-            <th scope="col">作成日時</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((shortUrl) => (
-            <ShortUrlRow key={shortUrl.code} shortUrl={shortUrl} />
-          ))}
-        </tbody>
-      </table>
+      <div className={ui.panel}>
+        <p className={ui.labelBar}>Links</p>
+        <div className={styles.tableScroll}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th scope="col">短いURL</th>
+                <th scope="col">元のURL</th>
+                <th scope="col" className={styles.number}>
+                  クリック数
+                </th>
+                <th scope="col">作成日時</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((shortUrl) => (
+                <ShortUrlRow key={shortUrl.code} shortUrl={shortUrl} />
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-      <nav className={styles.pagination} aria-label="ページ">
-        <button
-          type="button"
-          className={styles.button}
-          disabled={meta.current_page <= 1}
-          onClick={() => {
-            goToPage(meta.current_page - 1)
-          }}
-        >
-          前へ
-        </button>
-        <span>
-          {meta.current_page} / {meta.last_page}
-        </span>
-        <button
-          type="button"
-          className={styles.button}
-          disabled={meta.current_page >= meta.last_page}
-          onClick={() => {
-            goToPage(meta.current_page + 1)
-          }}
-        >
-          次へ
-        </button>
-      </nav>
+        <nav className={styles.pagination} aria-label="ページ">
+          <button
+            type="button"
+            className={ui.buttonSubmit}
+            disabled={meta.current_page <= 1}
+            onClick={() => {
+              goToPage(meta.current_page - 1)
+            }}
+          >
+            前へ
+          </button>
+          <span>
+            {meta.current_page} / {meta.last_page}
+          </span>
+          <button
+            type="button"
+            className={ui.buttonSubmit}
+            disabled={meta.current_page >= meta.last_page}
+            onClick={() => {
+              goToPage(meta.current_page + 1)
+            }}
+          >
+            次へ
+          </button>
+        </nav>
+      </div>
     </section>
   )
 }
