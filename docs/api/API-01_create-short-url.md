@@ -13,7 +13,7 @@
 | メソッド | POST |
 | パス | /api/v1/short-urls |
 | 認証 | なし |
-| レート制限 | 60回/分/IP（超過時429） |
+| レート制限 | 10回/分/IP（API全体の60回/分/IPに加えて。超過時429） |
 | 処理クラス | ShortUrlController@store → StoreShortUrlRequest → CreateShortUrl → ShortUrlResource |
 
 ## 2. リクエスト
@@ -22,7 +22,15 @@
 
 | 項目 | 型 | 必須 | 検証規則 |
 | --- | --- | --- | --- |
-| original_url | string | ○ | `required`、`string`、`max:2048`、`url:http,https` |
+| original_url | string | ○ | `required`、`string`、`max:2048`、`url:http,https`、`SafeRedirectUrl`（下記） |
+
+`SafeRedirectUrl` で拒否するもの（理由は [方式設計書 6.1](../02_architecture.md)）:
+
+- 認証情報（userinfo）を含むURL（例: `https://user:pass@example.com`）
+- ホスト（ポート含む）が `SHORT_URL_BASE` と同じURL（自サービスの短縮URL）
+- 改行・タブ・空白などの制御文字・空白を含むURL
+
+上記以外の項目（`code` など）が送られても無視する（`$request->validated()` の値のみ使用）。
 
 ```json
 { "original_url": "https://example.com/very/long/path?query=1" }

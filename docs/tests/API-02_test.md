@@ -16,5 +16,7 @@
 | API-02-T06 | 正常 | 21件登録、`page` 指定なし | `data` が20件、`meta.last_page` が2、`meta.per_page` が20 |
 | API-02-T07 | 正常 | 21件登録、`page=2` | `data` が1件（最も古いもの） |
 | API-02-T08 | 境界 | 1件登録、`page=99` | 200。`data` が空配列 |
-| API-02-T09 | 境界 | `page=abc` | 200。1ページ目を返す |
+| API-02-T09 | 異常 | `page=abc`、`page=0`、`page=-1` | 422 |
 | API-02-T10 | 性能 | 20件・各クリックあり | 実行クエリ数が件数に比例しない（N+1がない。`DB::enableQueryLog()` で件数を確認） |
+| API-02-T11 | 異常 | 1分間に61回リクエスト | 61回目が429 |
+| API-02-T12 | 異常 | `Origin: http://evil.example` 付きでリクエスト | `Access-Control-Allow-Origin` ヘッダーが付かない |

@@ -19,9 +19,15 @@
 | API-01-T09 | 異常 | `ftp://example.com` | 422 |
 | API-01-T10 | 異常 | 2049文字のURL | 422 |
 | API-01-T11 | 異常 | 文字列以外（配列 `["https://example.com"]`） | 422 |
-| API-01-T12 | 異常 | 1分間に61回送信 | 61回目が429 |
+| API-01-T12 | 異常 | 1分間に11回送信 | 11回目が429 |
 | API-01-T13 | 正常 | `SHORT_URL_BASE` を `https://sho.rt` に変更 | `short_url` が `https://sho.rt/{code}` |
 | API-01-T14 | 正常 | `SHORT_URL_BASE` を末尾スラッシュ付きの `https://sho.rt/` に変更 | `short_url` が `https://sho.rt/{code}`（`/` が重ならない） |
+| API-01-T15 | 異常 | 認証情報付き `https://user:pass@example.com`、`https://google.com@evil.example` | 422 |
+| API-01-T16 | 異常 | 自サービスのURL（`SHORT_URL_BASE` と同じホスト・ポート。ホストの大文字小文字違いも含む） | 422 |
+| API-01-T17 | 異常 | 改行（`%0d%0a` ではなく生のCR/LF）・タブ・空白を含むURL | 422 |
+| API-01-T18 | 正常 | `original_url` に加えて `code: "aaaaaaa"` を送信 | 201。`code` は無視され、ランダムなコードが発行される |
+| API-01-T19 | 正常 | 正常に登録 | 6.3のヘッダー（nosniff、DENY、no-referrer、CSP、no-store）が付いている |
+| API-01-T20 | 異常 | `Accept` ヘッダーなしで不正な入力を送信 | 422がJSONで返る（リダイレクトやHTMLにならない） |
 
 ## 単体テスト
 

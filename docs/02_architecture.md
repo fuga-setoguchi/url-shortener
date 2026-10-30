@@ -30,6 +30,7 @@ flowchart LR
 | queue | app と同じイメージで `php artisan queue:work` | なし |
 | frontend | `node`（公式LTSイメージ）。`npm ci` 後 `vite --host` | 5173 |
 
+- ポートはすべて `127.0.0.1` にのみ公開する（例: `127.0.0.1:8000:8000`）。Docker の既定では全インターフェース（0.0.0.0）に公開され、同じネットワーク上の他の端末からDB等に接続できてしまうため
 - app・queue は db のヘルスチェック成功後に起動する（`depends_on.condition: service_healthy`）
 - ローカル開発用途のため、Webサーバーは `php artisan serve` とする（nginx + php-fpm は本番向けで、本プロジェクトの対象外）
 - 初回起動時に `.env` が無ければ `.env.example` から作成し `APP_KEY` を生成する
@@ -65,8 +66,10 @@ backend/app/
 │   ├── Controllers/
 │   │   ├── ShortUrlController.php        # API-01 store / API-02 index
 │   │   └── RedirectController.php        # API-03（__invoke）
+│   ├── Middleware/SecurityHeaders.php    # セキュリティ関連ヘッダーの付与（6.3）
 │   ├── Requests/StoreShortUrlRequest.php # API-01 の入力検証
 │   └── Resources/ShortUrlResource.php    # API-01/02 のレスポンス整形
+├── Rules/SafeRedirectUrl.php            # 転送先URLの安全性検証（6.1）
 ├── Actions/CreateShortUrl.php            # コード発行と保存（衝突時の再生成）
 ├── Support/ShortCodeGenerator.php        # ランダム7文字の生成
 ├── Jobs/RecordClick.php                  # クリック記録（キュー）
@@ -83,7 +86,7 @@ backend/app/
 
 | 定義場所 | ルート | ミドルウェア |
 | --- | --- | --- |
-| `routes/api.php` | `POST /api/v1/short-urls`、`GET /api/v1/short-urls` | `api`（POSTには `throttle:60,1`） |
+| `routes/api.php` | `POST /api/v1/short-urls`、`GET /api/v1/short-urls` | `api`、`throttle:api`（60回/分）。POSTには `throttle:create-short-url`（10回/分）も適用 |
 | `routes/web.php` | `GET /{code}`（`code` は `[A-Za-z0-9]{7}` の正規表現制約） | なし（後述） |
 
 - リダイレクトはステートレスなため、セッション・Cookie・CSRFを扱う `web` ミドルウェアグループを適用しない（`bootstrap/app.php` の `withRouting` で web ルートをミドルウェアなしで登録する）。不要なセッション書き込みを避けるため
@@ -137,7 +140,7 @@ frontend/src/
 | 想定外のエラー | 500（本文に詳細を含めない。`APP_DEBUG=false` 時） | 汎用エラーメッセージを表示 |
 | 存在しないコード | 404（Laravel標準の404ページ） | 対象外（ブラウザが直接アクセス） |
 
-- APIへのリクエストには `Accept: application/json` を付与し、エラーをJSONで受け取る
+- `/api/*` のエラーは `Accept` ヘッダーに関わらず常にJSONで返す（`bootstrap/app.php` の `shouldRenderJsonWhen`）。フロントエンドも `Accept: application/json` を付与する
 - 検証エラーメッセージは日本語化する（`lang/ja/validation.php`、`APP_LOCALE=ja`）
 
 ## 4. CI（GitHub Actions）
@@ -146,8 +149,12 @@ PRとmainへのpushで実行する。backendとfrontendは別ジョブで並列�
 
 | ジョブ | 手順 |
 | --- | --- |
-| backend | Composer install → Pint（`--test`）→ Larastan → OpenAPI再生成の差分チェック → Pest（MySQLサービスコンテナ使用） |
-| frontend | `npm ci` → 型生成の差分チェック → ESLint → Prettier（`--check`）→ tsc → Vitest |
+| backend | Composer install → `composer audit` → Pint（`--test`）→ Larastan → OpenAPI再生成の差分チェック → Pest（MySQLサービスコンテナ使用） |
+| frontend | `npm ci` → `npm audit --audit-level=high` → 型生成の差分チェック → ESLint → Prettier（`--check`）→ tsc → Vitest |
+
+- ワークフローの権限は最小にする（`permissions: contents: read`）
+- 外部のアクションはコミットSHAで固定する（タグの付け替えによる改ざんを防ぐ）。更新は Dependabot に任せる
+- Dependabot で Composer・npm・GitHub Actions の依存更新PRを週1回作成する
 
 - バックエンドのテストはMySQLで実行する（照合順序 `utf8mb4_bin` による大小文字の区別など、本番と同じDBの挙動を検証するため）
 - ローカルでは `docker compose exec app php artisan test` で同じテストを実行できる（テスト用DB `testing` を使用）
@@ -156,3 +163,80 @@ PRとmainへのpushで実行する。backendとfrontendは別ジョブで並列�
 
 - 機能ごとにIssueとブランチ（`feature/API-01-create-short-url` など）を作成し、PRでmainへマージする
 - mainはブランチ保護を設定し、CI通過をマージ条件とする
+
+## 6. セキュリティ設計
+
+本サービスは「利用者が入力したURLへ転送する」ことが本質であり、悪用（不正なURLの登録、転送先の偽装）と、ローカル環境の不用意な公開を主な脅威とする。
+
+### 6.1 入力（URL登録）
+
+| 対策 | 内容 | 防ぐもの |
+| --- | --- | --- |
+| スキーム制限 | http・httpsのみ（`url:http,https`） | `javascript:`・`data:` 等によるXSS、アプリ起動スキームの悪用 |
+| 認証情報付きURLの拒否 | `user:pass@host` 形式（URLのuserinfo部）を拒否 | `https://google.com@evil.example` のような転送先の偽装 |
+| 自サービスへの短縮を拒否 | ホスト（ポート含む）が `SHORT_URL_BASE` と同じURLを拒否 | 短縮URLの多重化による転送先の隠蔽、転送ループ |
+| 制御文字・空白の拒否 | 改行（CR/LF）・タブ・空白などを含むURLを拒否 | `Location` ヘッダーへの改行混入（ヘッダーインジェクション） |
+| 長さ制限 | 最大2048文字 | 過大な入力 |
+| 検証済みの値のみ使用 | `$request->validated()` の値だけを保存し、モデルは `$fillable` で列を限定 | マスアサインメント（`code` 等の指定による上書き） |
+
+- サーバーは登録されたURLへ自らアクセスしない（プレビュー取得等を行わない）。そのため、内部ネットワークへの不正アクセス（SSRF）は発生しない。将来この種の機能を足す場合はSSRF対策を別途設計する
+- 検証規則は独自ルール `SafeRedirectUrl`（`app/Rules/`）にまとめ、単体でテストできるようにする
+
+### 6.2 出力
+
+| 対策 | 内容 |
+| --- | --- |
+| 内部IDを返さない | 識別子は `code` のみ公開する |
+| エラー詳細を返さない | `.env.example` は `APP_DEBUG=false` とし、500の本文にスタックトレース等を含めない（調査時のみ手元で `true` にする） |
+| 元のURLはテキストで表示 | 画面では元のURLをリンクにせず、Reactの通常の文字列表示（自動エスケープ）で出す。`dangerouslySetInnerHTML` は使わない（ESLintで禁止） |
+| 外部リンクの保護 | 短いURLのリンクは `rel="noopener noreferrer"` を付ける |
+
+### 6.3 HTTPヘッダー
+
+ミドルウェア `SecurityHeaders` で付与する。
+
+| ヘッダー | 値 | 対象 |
+| --- | --- | --- |
+| X-Content-Type-Options | `nosniff` | 全レスポンス |
+| X-Frame-Options | `DENY` | 全レスポンス |
+| Referrer-Policy | `no-referrer` | 全レスポンス（転送先にリファラーを渡さない） |
+| Content-Security-Policy | `default-src 'none'; frame-ancestors 'none'` | `/api/*` のみ（JSONしか返さないため、何も読み込ませない） |
+| Cache-Control | `no-store` | `/api/*` のみ |
+
+- HSTSはHTTPSを使わないローカル環境のため付与しない（公開時に追加する）
+
+### 6.4 レート制限
+
+| 対象 | 制限（IP単位） | 理由 |
+| --- | --- | --- |
+| API全体（`/api/*`） | 60回/分 | 一覧取得の連打などによる負荷の抑制 |
+| URL登録（API-01） | 10回/分（API全体の制限に加えて） | 大量登録・悪用の抑制 |
+| リダイレクト（API-03） | なし | 後述 |
+
+- リダイレクトに制限を設けない理由：制限のカウンタ更新（cacheテーブルへの書き込み）が転送のたびに発生し、応答を遅らせない方針（NFR-02）と矛盾するため。コードは62^7通りあり、総当たりで有効なコードを見つけることは現実的でない
+- クライアントIPはプロキシのヘッダー（`X-Forwarded-For`）を信頼せず、接続元IPを使う（Laravel既定。プロキシを置かないため）
+
+### 6.5 CSRF・CORS
+
+- APIはCookie・セッションを使わないため、CSRFの対象外とする。将来ログインをCookie方式で追加する場合はCSRF対策を合わせて導入する
+- CORSは許可オリジンを空にする（`config/cors.php` の `allowed_origins => []`）。画面はViteのプロキシ経由で同一オリジンからアクセスするため不要であり、Laravel既定の `*`（全オリジン許可）を残さない
+
+### 6.6 環境・秘密情報
+
+- `.env` はコミットしない（`.gitignore`）。`.env.example` には秘密情報を含めない
+- DBはアプリ専用ユーザーで接続し、rootを使わない。権限は対象DBのみに限定する
+- コンテナ内のプロセスは非rootユーザーで実行する
+- 依存パッケージの既知の脆弱性はCIの `composer audit` / `npm audit` で検出し、Dependabotで更新する
+
+### 6.7 受け入れるリスク
+
+MVP（ローカル環境のみ）で対策しないものと、その理由。公開する場合は対策を必須とする。
+
+| リスク | 理由・公開時の対策 |
+| --- | --- |
+| 一覧APIで誰でも全件を閲覧できる | ログインなしの仕様のため。公開時はログイン機能（将来拡張）で利用者ごとに制限する |
+| フィッシング・マルウェアのURLを登録できる | 悪性URLの判定には外部サービスが必要で、本プロジェクトの範囲外。公開時は Google Safe Browsing 等で判定する |
+| ボットのアクセスもクリック数に含まれる | 分析機能は対象外のため |
+| HTTPS非対応 | ローカル環境のみのため。公開時はHTTPS化とHSTSを必須とする |
+
+- 個人情報の保護のため、クリック記録にIPアドレス・User-Agentは保存しない

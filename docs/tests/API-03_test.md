@@ -15,6 +15,7 @@
 | API-03-T05 | 異常 | 形式不正のコード（6文字、8文字、記号を含む） | 404 |
 | API-03-T06 | 異常 | `aB3xK9q` を登録し、`AB3XK9Q` にアクセス | 404（大小文字を区別する） |
 | API-03-T07 | 正常 | `/up` にアクセス | 200（ヘルスチェックがリダイレクトのルートと衝突しない） |
+| API-03-T08 | 正常 | 登録済みコードにアクセス | `X-Content-Type-Options: nosniff`、`X-Frame-Options: DENY`、`Referrer-Policy: no-referrer` が付いている |
 
 ## ジョブのテスト（tests/Feature/RecordClickTest.php）
 
