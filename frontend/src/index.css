@@ -1,0 +1,30 @@
+:root {
+  --color-text: #1f2328;
+  --color-muted: #59636e;
+  --color-border: #d1d9e0;
+  --color-primary: #0969da;
+  --color-error: #d1242f;
+
+  color: var(--color-text);
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: var(--color-primary);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
