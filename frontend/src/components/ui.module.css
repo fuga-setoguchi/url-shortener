@@ -1,0 +1,131 @@
+/* 画面共通の部品（パネル・見出し・ボタン・入力欄） */
+
+/* 見出しエリア: 縁取りと影を付けた太字の見出し（ゲームのパッケージ風） */
+.hero {
+  position: relative;
+  padding: 24px 20px;
+  border: 1px solid;
+  border-color: var(--color-chrome-highlight) var(--color-chrome-indigo)
+    var(--color-chrome-indigo) var(--color-chrome-highlight);
+  background:
+    radial-gradient(rgb(255 255 255 / 25%) 1px, transparent 1.5px) 0 0 / 6px 6px,
+    linear-gradient(135deg, var(--color-lavender), var(--color-canvas-soft));
+  clip-path: polygon(
+    12px 0,
+    100% 0,
+    100% calc(100% - 12px),
+    calc(100% - 12px) 100%,
+    0 100%,
+    0 12px
+  );
+}
+
+.heroTitle {
+  margin: 0;
+  color: var(--color-on-dark);
+  font-family: var(--font-display);
+  font-size: clamp(28px, 6vw, 40px);
+  font-weight: 900;
+  line-height: 1.2;
+  /* 縁取り + 右下へずらした硬い影 */
+  text-shadow:
+    -2px -2px 0 var(--color-carbon),
+    2px -2px 0 var(--color-carbon),
+    -2px 2px 0 var(--color-carbon),
+    2px 2px 0 var(--color-carbon),
+    5px 5px 0 var(--color-chrome-indigo);
+}
+
+.heroTagline {
+  margin: 8px 0 0;
+  color: var(--color-ink);
+  font-size: 15px;
+  font-weight: bold;
+}
+
+/* 金属パネル: 上と左が明るく、下と右が暗い縁で立体に見せる */
+.panel {
+  border: 1px solid;
+  border-color: var(--color-chrome-highlight) var(--color-chrome-indigo)
+    var(--color-chrome-indigo) var(--color-chrome-highlight);
+  background: var(--color-surface);
+  box-shadow: 0 2px 0 var(--color-chrome-indigo);
+}
+
+/* パネルの見出し帯（大文字・字間を空けた小さなラベル） */
+.labelBar {
+  margin: 0;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--color-chrome-indigo);
+  background: linear-gradient(180deg, var(--color-canvas-soft), #8eaddb);
+  color: var(--color-ink);
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.panelBody {
+  padding: 16px;
+}
+
+.input {
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-hairline);
+  border-radius: 2px;
+  background: var(--color-surface);
+  box-shadow: inset 0 2px 0 rgb(0 0 0 / 8%);
+  color: var(--color-ink);
+  font: inherit;
+}
+
+/* ボタン共通: 上辺を明るく、下辺に硬い影を付けた立体的なボタン */
+.button {
+  min-height: 44px;
+  padding: 8px 18px;
+  border: 1px solid var(--color-carbon);
+  border-radius: 2px;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 55%),
+    0 2px 0 var(--color-carbon);
+  color: var(--color-ink);
+  font: inherit;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.button:active:not(:disabled) {
+  box-shadow: inset 0 2px 0 rgb(0 0 0 / 20%);
+  transform: translateY(2px);
+}
+
+.button:disabled {
+  border-color: var(--color-muted);
+  background: var(--color-platinum);
+  box-shadow: none;
+  color: var(--color-muted);
+  cursor: not-allowed;
+}
+
+/* 送信・次へ進む操作（オレンジ）。白文字はコントラスト不足のため紺の文字にする */
+.buttonSubmit {
+  composes: button;
+  background: var(--color-signal);
+}
+
+.buttonSubmit:hover:not(:disabled) {
+  background: var(--color-signal-pressed);
+}
+
+/* 補助的な操作（コピー・再試行など。アンバー） */
+.buttonUtility {
+  composes: button;
+  background: var(--color-amber);
+}
+
+.buttonUtility:hover:not(:disabled) {
+  background: var(--color-amber-pressed);
+}

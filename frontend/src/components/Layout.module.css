@@ -1,42 +1,115 @@
 .layout {
-  max-width: 960px;
+  display: grid;
+  /* 列の最小幅を 0 にし、表などの広い要素で画面全体が横にはみ出さないようにする */
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  max-width: 880px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 16px;
 }
 
 .header {
+  margin-top: 16px;
+}
+
+/* 紺のコマンド層: スピーカーグリルのような細かい網点を重ねる */
+.navBar {
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--color-border);
+  padding: 0 16px;
+  border-bottom: 2px solid var(--color-chrome-indigo);
+  background:
+    radial-gradient(rgb(255 255 255 / 9%) 1px, transparent 1.3px) 0 0 / 4px 4px,
+    var(--color-carbon);
+  clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
 }
 
 .brand {
-  color: inherit;
-  font-size: 1.25rem;
-  font-weight: bold;
+  margin-left: -8px;
+  padding: 12px 8px;
+  color: var(--color-on-dark);
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
   text-decoration: none;
+  text-transform: uppercase;
+}
+
+/* 紺の背景では既定（紺）のフォーカス枠が見えないため、アンバーにする */
+/* ナビゲーションバーの clip-path で切れないよう、枠は内側に描く */
+.brand:focus-visible {
+  outline-color: var(--color-amber);
+  outline-offset: -3px;
 }
 
 .nav {
   display: flex;
-  gap: 1rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+/* メニューの文字は金色。押せる範囲は 44px 以上を確保する */
 .navLink {
-  color: var(--color-muted);
+  display: block;
+  min-width: 64px;
+  padding: 12px 14px;
+  border-bottom: 3px solid transparent;
+  color: var(--color-nav-gold);
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  text-align: center;
   text-decoration: none;
 }
 
+.navLink:hover {
+  color: var(--color-amber);
+}
+
 .navLink:global(.active) {
-  color: var(--color-primary);
+  border-bottom-color: var(--color-amber);
+  color: var(--color-amber);
+}
+
+.navLink:focus-visible {
+  outline-color: var(--color-amber);
+  outline-offset: -3px;
+}
+
+/* ナビゲーションの下の淡い帯 */
+.subStrip {
+  margin: 0;
+  padding: 4px 16px;
+  border-bottom: 1px solid var(--color-chrome-indigo);
+  background: var(--color-canvas-soft);
+  color: var(--color-ink);
+  font-size: 12px;
   font-weight: bold;
+  letter-spacing: 0.05em;
 }
 
 .main {
-  padding: 1.5rem 0;
+  padding: 24px 0;
+}
+
+.footer {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background:
+    radial-gradient(rgb(255 255 255 / 9%) 1px, transparent 1.3px) 0 0 / 4px 4px,
+    var(--color-carbon);
+  color: var(--color-canvas-soft);
+  font-size: 12px;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - 10px),
+    calc(100% - 10px) 100%,
+    0 100%
+  );
 }
