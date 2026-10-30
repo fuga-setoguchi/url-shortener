@@ -1,6 +1,6 @@
 # URL短縮サービス
 
-[![CI](https://github.com/fuga-setoguchi/url-shortener/actions/workflows/ci.yml/badge.svg)](https://github.com/fuga-setoguchi/url-shortener/actions/workflows/ci.yml)
+![CI](https://github.com/fuga-setoguchi/url-shortener/actions/workflows/ci.yml/badge.svg)
 
 長いURLを短いURLに変換し、アクセス時に元のURLへ転送するWebサービスです。Laravel（API）と React + TypeScript（SPA）で作りました。
 
@@ -90,8 +90,6 @@ docker compose exec frontend npm run format:check   # Prettier
 ```
 
 ## 設計判断
-
-> TODO: この節は自分の言葉で書き直す（計画書 10章「設計判断の理由を自分の言葉でREADMEに書く」）。以下は設計書から要点を抜き出した下書き。
 
 | 論点 | 判断 | 理由 |
 | --- | --- | --- |
