@@ -18,6 +18,11 @@ export function Layout() {
                 登録
               </NavLink>
             </li>
+            <li>
+              <NavLink to="/urls" className={styles.navLink}>
+                一覧
+              </NavLink>
+            </li>
           </ul>
         </nav>
       </header>

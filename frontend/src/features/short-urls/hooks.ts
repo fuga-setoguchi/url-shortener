@@ -1,8 +1,34 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
 import { ApiError, apiClient, type ShortUrl } from '../../api/client.ts'
 
 export const shortUrlKeys = {
   all: ['short-urls'] as const,
+  list: (page: number) => [...shortUrlKeys.all, 'list', page] as const,
+}
+
+/**
+ * 短縮URLの一覧を取得する（API-02）。
+ */
+export function useShortUrls(page: number) {
+  return useQuery({
+    queryKey: shortUrlKeys.list(page),
+    queryFn: async () => {
+      const { data, response } = await apiClient.GET('/short-urls', {
+        params: { query: { page } },
+      })
+      if (data === undefined) {
+        throw new ApiError(response.status)
+      }
+      return data
+    },
+    // ページを切り替える間は前のページを表示したままにし、画面のちらつきを防ぐ
+    placeholderData: keepPreviousData,
+  })
 }
 
 /**
