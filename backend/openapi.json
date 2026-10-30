@@ -2,11 +2,134 @@
     "openapi": "3.1.2",
     "info": {
         "title": "URL Shortener",
-        "version": "0.0.1"
+        "version": "1.0.0",
+        "description": "URL\u77ed\u7e2e\u30b5\u30fc\u30d3\u30b9\u306eAPI"
     },
     "servers": [
         {
-            "url": "http://localhost:8000/api"
+            "url": "http://localhost:8000/api/v1"
         }
-    ]
+    ],
+    "paths": {
+        "/short-urls": {
+            "post": {
+                "operationId": "shortUrl.store",
+                "summary": "\u77ed\u7e2eURL\u767b\u9332\uff08API-01\uff09",
+                "tags": [
+                    "ShortUrl"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreShortUrlRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`ShortUrlResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ShortUrlResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ShortUrlResource": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "short_url": {
+                        "type": "string"
+                    },
+                    "original_url": {
+                        "type": "string"
+                    },
+                    "clicks_count": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "code",
+                    "short_url",
+                    "original_url",
+                    "clicks_count",
+                    "created_at"
+                ],
+                "title": "ShortUrlResource"
+            },
+            "StoreShortUrlRequest": {
+                "type": "object",
+                "properties": {
+                    "original_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 2048
+                    }
+                },
+                "required": [
+                    "original_url"
+                ],
+                "title": "StoreShortUrlRequest"
+            }
+        },
+        "responses": {
+            "ValidationException": {
+                "description": "Validation error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Errors overview."
+                                },
+                                "errors": {
+                                    "type": "object",
+                                    "description": "A detailed description of each field that failed validation.",
+                                    "additionalProperties": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "required": [
+                                "message",
+                                "errors"
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
