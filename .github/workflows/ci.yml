@@ -40,6 +40,7 @@ jobs:
 
     env:
       DB_HOST: 127.0.0.1
+      DB_DATABASE: testing
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -68,6 +69,10 @@ jobs:
 
       - name: Static analysis (Larastan)
         run: composer analyse
+
+      # Scramble はDBのテーブル定義からモデルの型を推論するため、出力の前にマイグレーションする
+      - name: Migrate database
+        run: php artisan migrate --force
 
       - name: Check OpenAPI is up to date
         run: |

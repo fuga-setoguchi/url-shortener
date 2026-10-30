@@ -127,7 +127,7 @@ frontend/src/
 
 ### 3.5 API型連携の流れ
 
-1. バックエンドを変更したら `php artisan scramble:export --path=openapi.json` で `backend/openapi.json` を更新する
+1. バックエンドを変更したら `php artisan scramble:export --path=openapi.json` で `backend/openapi.json` を更新する（Scramble はDBのテーブル定義からモデルの型を推論するため、マイグレーション済みのDBが必要）
 2. フロントエンドで `npm run generate:api`（`openapi-typescript ../backend/openapi.json -o src/api/schema.d.ts`）を実行する
 3. CIで両方を再生成し、差分が出たら失敗させる（生成物の更新漏れを防ぐ）
 
@@ -149,7 +149,7 @@ PRとmainへのpushで実行する。backendとfrontendは別ジョブで並列�
 
 | ジョブ | 手順 |
 | --- | --- |
-| backend | Composer install → `composer audit` → Pint（`--test`）→ Larastan → OpenAPI再生成の差分チェック → Pest（MySQLサービスコンテナ使用） |
+| backend | Composer install → `composer audit` → Pint（`--test`）→ Larastan → マイグレーション → OpenAPI再生成の差分チェック → Pest（MySQLサービスコンテナ使用） |
 | frontend | `npm ci` → `npm audit --audit-level=high` → 型生成の差分チェック → ESLint → Prettier（`--check`）→ tsc → Vitest |
 
 - ワークフローの権限は最小にする（`permissions: contents: read`）
