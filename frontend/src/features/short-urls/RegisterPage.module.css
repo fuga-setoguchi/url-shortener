@@ -1,71 +1,56 @@
 .page {
   display: grid;
-  gap: 1.5rem;
+  /* 表などの広い要素で列が広がり、画面からはみ出さないようにする */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
 }
 
-.form {
+.formBody,
+.resultBody {
   display: grid;
-  gap: 0.5rem;
+  gap: 8px;
+  padding: 16px;
+}
+
+.formBody label {
+  font-weight: bold;
 }
 
 .row {
   display: flex;
-  gap: 0.5rem;
+  flex-wrap: wrap;
+  gap: 8px;
   align-items: center;
 }
 
-.input {
-  flex: 1;
-  min-width: 0;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  font: inherit;
-}
-
-.button {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 6px;
-  background: var(--color-primary);
-  color: #fff;
-  font: inherit;
-  cursor: pointer;
-}
-
-.button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.row > input {
+  flex: 1 1 260px;
 }
 
 .error {
   margin: 0;
   color: var(--color-error);
-}
-
-.result {
-  display: grid;
-  gap: 0.5rem;
-  padding: 1rem;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-}
-
-.shortUrl {
-  flex: 1;
-  min-width: 0;
-  overflow-wrap: anywhere;
   font-weight: bold;
 }
 
+.shortUrl {
+  flex: 1 1 260px;
+  min-width: 0;
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+
 .status {
-  min-height: 1.5em;
+  min-height: 1.6em;
   margin: 0;
-  color: var(--color-muted);
+  color: var(--color-ink-soft);
+  font-weight: bold;
 }
 
 .originalUrl {
   margin: 0;
-  overflow-wrap: anywhere;
+  padding-top: 8px;
+  border-top: 1px dotted var(--color-muted);
   color: var(--color-muted);
+  overflow-wrap: anywhere;
 }
