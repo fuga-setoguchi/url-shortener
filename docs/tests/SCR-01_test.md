@@ -1,7 +1,7 @@
 # SCR-01 URL登録画面 テスト設計
 
 作成日: 2026-10-29
-ステータス: レビュー待ち
+ステータス: 確定（2026-10-30）
 対象: [SCR-01](../screens/SCR-01_register.md)
 テストファイル: `frontend/src/features/short-urls/RegisterPage.test.tsx`
 

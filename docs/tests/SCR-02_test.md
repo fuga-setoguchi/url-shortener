@@ -1,7 +1,7 @@
 # SCR-02 URL一覧画面 テスト設計
 
 作成日: 2026-10-29
-ステータス: レビュー待ち
+ステータス: 確定（2026-10-30）
 対象: [SCR-02](../screens/SCR-02_list.md)
 テストファイル: `frontend/src/features/short-urls/UrlListPage.test.tsx`
 

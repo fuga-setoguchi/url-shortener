@@ -1,7 +1,7 @@
 # API-02 短縮URL一覧取得 テスト設計
 
 作成日: 2026-10-29
-ステータス: レビュー待ち
+ステータス: 確定（2026-10-30）
 対象: [API-02](../api/API-02_list-short-urls.md)
 
 ## 機能テスト（tests/Feature/ListShortUrlsTest.php）

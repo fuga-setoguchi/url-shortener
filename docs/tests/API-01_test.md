@@ -1,7 +1,7 @@
 # API-01 短縮URL登録 テスト設計
 
 作成日: 2026-10-29
-ステータス: レビュー待ち
+ステータス: 確定（2026-10-30）
 対象: [API-01](../api/API-01_create-short-url.md)
 
 ## 機能テスト（tests/Feature/CreateShortUrlTest.php）

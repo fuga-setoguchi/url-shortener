@@ -1,7 +1,7 @@
 # API-03 リダイレクト テスト設計
 
 作成日: 2026-10-29
-ステータス: レビュー待ち
+ステータス: 確定（2026-10-30）
 対象: [API-03](../api/API-03_redirect.md)
 
 ## 機能テスト（tests/Feature/RedirectTest.php）
