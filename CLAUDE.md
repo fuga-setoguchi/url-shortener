@@ -48,4 +48,14 @@ compose.yaml
 
 ## コマンド
 
-環境構築時に追記する。
+ホストにPHPは不要。バックエンドのコマンドはすべてコンテナ内で実行する。
+
+| 用途 | コマンド |
+| --- | --- |
+| 起動 / 停止 | `docker compose up -d` / `docker compose down` |
+| バックエンドのテスト | `docker compose exec app composer test` |
+| 静的解析（Larastan） | `docker compose exec app composer analyse` |
+| 整形チェック / 整形（Pint） | `docker compose exec app composer lint` / `composer format` |
+| OpenAPI出力 | `docker compose exec app php artisan scramble:export --path=openapi.json` |
+
+バックエンド固有のルールは `backend/CLAUDE.md` を参照。

@@ -25,8 +25,8 @@ flowchart LR
 
 | サービス | イメージ / 起動内容 | ポート |
 | --- | --- | --- |
-| db | `mysql`（公式イメージ）。ヘルスチェック付き | 3306 |
-| app | `backend/Dockerfile`（PHP CLI + pdo_mysql + Composer）。起動時に依存インストール・マイグレーション後 `php artisan serve` | 8000 |
+| db | `mysql:9.7`（公式イメージ、LTS）。ヘルスチェック付き | 3306 |
+| app | `backend/Dockerfile`（`php:8.5-cli` + pdo_mysql + Composer）。起動時に依存インストール・マイグレーション後 `php artisan serve` | 8000 |
 | queue | app と同じイメージで `php artisan queue:work` | なし |
 | frontend | `node`（公式LTSイメージ）。`npm ci` 後 `vite --host` | 5173 |
 
@@ -37,12 +37,12 @@ flowchart LR
 
 ## 2. 技術スタック
 
-各バージョンは環境構築時点の最新安定版で確定し、本書とREADMEを更新する。
+各バージョンは環境構築時点（2026-10-30）の最新安定版で確定した。メジャーバージョンを記載し、詳細は `composer.lock` / `package-lock.json` を正とする。フロントエンドはフロントエンドの環境構築時に記載する。
 
 | 領域 | 採用技術 | 備考 |
 | --- | --- | --- |
-| バックエンド | PHP / Laravel | APIとリダイレクト |
-| DB | MySQL | 文字コード utf8mb4 |
+| バックエンド | PHP 8.5 / Laravel 13 | APIとリダイレクト |
+| DB | MySQL 9.7（LTS） | 文字コード utf8mb4 |
 | キュー | Laravel Queue（database） | クリック記録 |
 | API仕様 | Scramble | コードからOpenAPIを生成し `backend/openapi.json` に出力してコミット |
 | フロントエンド | React + TypeScript + Vite | SPA |
@@ -50,7 +50,7 @@ flowchart LR
 | サーバー状態管理 | TanStack Query | 取得・ローディング・エラー状態の管理 |
 | APIクライアント | openapi-typescript + openapi-fetch | 生成した型でリクエスト・レスポンスを型付け |
 | スタイル | CSS Modules | 追加ライブラリなし |
-| バックエンド品質 | Larastan（最大レベル） / Pint / Pest | |
+| バックエンド品質 | Larastan 3（PHPStan 2、最大レベル） / Pint / Pest 5 | |
 | フロントエンド品質 | tsc / ESLint / Prettier / Vitest + React Testing Library + MSW | MSWでAPIをモック |
 | CI | GitHub Actions | 4章 |
 
