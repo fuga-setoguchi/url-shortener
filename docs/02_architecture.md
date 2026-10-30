@@ -154,7 +154,7 @@ PRとmainへのpushで実行する。backendとfrontendは別ジョブで並列�
 
 - ワークフローの権限は最小にする（`permissions: contents: read`）
 - 外部のアクションはコミットSHAで固定する（タグの付け替えによる改ざんを防ぐ）。更新は Dependabot に任せる
-- Dependabot で Composer・npm・GitHub Actions の依存更新PRを週1回作成する
+- Dependabot で Composer・npm・GitHub Actions の依存更新PRを週1回作成する（マイナー・パッチ更新は1つのPRにまとめる。TypeScriptのメジャー更新は2章の理由により対象外）
 
 - バックエンドのテストはMySQLで実行する（照合順序 `utf8mb4_bin` による大小文字の区別など、本番と同じDBの挙動を検証するため）
 - ローカルでは `docker compose exec app php artisan test` で同じテストを実行できる（テスト用DB `testing` を使用）
