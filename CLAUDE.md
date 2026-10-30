@@ -42,7 +42,9 @@ compose.yaml
 - コミットは機能やテストのまとまりごとに小さく分ける
 - コミットメッセージは日本語で、「何をしたか」が分かるように書く（例: `API-01 短縮URL登録APIと機能テストを追加`）
 - コミットにはこのリポジトリのローカル設定（個人用アカウント）を使う。`git config` の user.name / user.email は変更しない
-- GitHubへのpushはこのPCから行わない
+- メールアドレスはGitHubの非公開用アドレス（`@users.noreply.github.com`）を使う。個人・会社のメールアドレスを履歴に含めない
+- pushは利用者がVS Code（個人用GitHubアカウントでログイン）から行う。Claudeはpushしない
+- リモート `origin` はユーザー名入りのHTTPS形式（`https://fuga-setoguchi@github.com/...`）とし、会社用の認証情報が使われないようにする
 
 ## コマンド
 
