@@ -51,7 +51,7 @@ compose.yaml
 
 ## コマンド
 
-ホストにPHPは不要。バックエンドのコマンドはすべてコンテナ内で実行する。
+ホストにPHP・Node.jsは不要。コマンドはすべてコンテナ内で実行する。
 
 | 用途 | コマンド |
 | --- | --- |
@@ -60,5 +60,8 @@ compose.yaml
 | 静的解析（Larastan） | `docker compose exec app composer analyse` |
 | 整形チェック / 整形（Pint） | `docker compose exec app composer lint` / `composer format` |
 | OpenAPI出力 | `docker compose exec app php artisan scramble:export --path=openapi.json` |
+| API型の生成（OpenAPI出力の後） | `docker compose exec frontend npm run generate:api` |
+| フロントエンドの型チェック / lint / 整形チェック | `docker compose exec frontend npm run typecheck` / `lint` / `format:check` |
+| フロントエンドのテスト | `docker compose exec frontend npm test` |
 
-バックエンド固有のルールは `backend/CLAUDE.md` を参照。
+固有のルールは `backend/CLAUDE.md`、`frontend/CLAUDE.md` を参照。

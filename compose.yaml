@@ -55,5 +55,26 @@ services:
             app:
                 condition: service_healthy
 
+    frontend:
+        build: ./frontend
+        environment:
+            API_PROXY_TARGET: http://app:8000
+        volumes:
+            - ./frontend:/app
+            - frontend-node-modules:/app/node_modules
+            # API型の生成（npm run generate:api）で ../backend/openapi.json を参照する
+            - ./backend/openapi.json:/backend/openapi.json:ro
+        ports:
+            - "127.0.0.1:5173:5173"
+        depends_on:
+            app:
+                condition: service_healthy
+        healthcheck:
+            test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:5173/"]
+            interval: 5s
+            timeout: 5s
+            retries: 60
+
 volumes:
     db-data:
+    frontend-node-modules:

@@ -28,7 +28,7 @@ flowchart LR
 | db | `mysql:9.7`（公式イメージ、LTS）。ヘルスチェック付き | 3306 |
 | app | `backend/Dockerfile`（`php:8.5-cli` + pdo_mysql + Composer）。起動時に依存インストール・マイグレーション後 `php artisan serve` | 8000 |
 | queue | app と同じイメージで `php artisan queue:work` | なし |
-| frontend | `node`（公式LTSイメージ）。`npm ci` 後 `vite --host` | 5173 |
+| frontend | `frontend/Dockerfile`（`node:26-alpine`、LTS）。`npm ci` 後 `vite --host`。`node_modules` は名前付きボリュームに置く | 5173 |
 
 - ポートはすべて `127.0.0.1` にのみ公開する（例: `127.0.0.1:8000:8000`）。Docker の既定では全インターフェース（0.0.0.0）に公開され、同じネットワーク上の他の端末からDB等に接続できてしまうため
 - app・queue は db のヘルスチェック成功後に起動する（`depends_on.condition: service_healthy`）
@@ -37,7 +37,7 @@ flowchart LR
 
 ## 2. 技術スタック
 
-各バージョンは環境構築時点（2026-10-30）の最新安定版で確定した。メジャーバージョンを記載し、詳細は `composer.lock` / `package-lock.json` を正とする。フロントエンドはフロントエンドの環境構築時に記載する。
+各バージョンは環境構築時点（2026-10-30）の最新安定版で確定した。メジャーバージョンを記載し、詳細は `composer.lock` / `package-lock.json` を正とする。
 
 | 領域 | 採用技術 | 備考 |
 | --- | --- | --- |
@@ -45,13 +45,13 @@ flowchart LR
 | DB | MySQL 9.7（LTS） | 文字コード utf8mb4 |
 | キュー | Laravel Queue（database） | クリック記録 |
 | API仕様 | Scramble | コードからOpenAPIを生成し `backend/openapi.json` に出力してコミット |
-| フロントエンド | React + TypeScript + Vite | SPA |
-| ルーティング | React Router | `/` と `/urls` の2画面 |
-| サーバー状態管理 | TanStack Query | 取得・ローディング・エラー状態の管理 |
+| フロントエンド | React 19 + TypeScript 5.9 + Vite 8（Node.js 26） | SPA。TypeScriptは最新の7系ではなく5.9とする（typescript-eslint・openapi-typescript が7系に未対応のため） |
+| ルーティング | React Router 8 | `/` と `/urls` の2画面 |
+| サーバー状態管理 | TanStack Query 5 | 取得・ローディング・エラー状態の管理 |
 | APIクライアント | openapi-typescript + openapi-fetch | 生成した型でリクエスト・レスポンスを型付け |
 | スタイル | CSS Modules | 追加ライブラリなし |
 | バックエンド品質 | Larastan 3（PHPStan 2、最大レベル） / Pint / Pest 5 | |
-| フロントエンド品質 | tsc / ESLint / Prettier / Vitest + React Testing Library + MSW | MSWでAPIをモック |
+| フロントエンド品質 | tsc / ESLint 10（typescript-eslint strict） / Prettier / Vitest 5 + React Testing Library + MSW 3 | MSWでAPIをモック |
 | CI | GitHub Actions | 4章 |
 
 ## 3. 方式設計
