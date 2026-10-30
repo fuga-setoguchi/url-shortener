@@ -59,7 +59,7 @@ compose.yaml
 | バックエンドのテスト | `docker compose exec app composer test` |
 | 静的解析（Larastan） | `docker compose exec app composer analyse` |
 | 整形チェック / 整形（Pint） | `docker compose exec app composer lint` / `composer format` |
-| OpenAPI出力 | `docker compose exec app php artisan scramble:export --path=openapi.json` |
+| OpenAPI出力（マイグレーション後に実行。DBのテーブル定義から型を推論するため） | `docker compose exec app php artisan scramble:export --path=openapi.json` |
 | API型の生成（OpenAPI出力の後） | `docker compose exec frontend npm run generate:api` |
 | フロントエンドの型チェック / lint / 整形チェック | `docker compose exec frontend npm run typecheck` / `lint` / `format:check` |
 | フロントエンドのテスト | `docker compose exec frontend npm test` |
