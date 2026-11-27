@@ -45,10 +45,11 @@ export function useCreateShortUrl() {
       if (data !== undefined) {
         return data.data
       }
-      // 検証エラーの本文の形が保証されるのは 422 のときだけ
+      // 検証エラーの本文の形が保証されるのは 422 のときだけ。
+      // ステータスでは本文の型（422・429 の union）が絞り込まれないため、errors の有無でも絞り込む
       throw new ApiError(
         response.status,
-        response.status === 422 ? error.errors : undefined,
+        response.status === 422 && 'errors' in error ? error.errors : undefined,
       )
     },
     // 一覧に新しいURLが表示されるよう、一覧のキャッシュを無効化する
